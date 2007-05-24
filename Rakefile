@@ -6,6 +6,13 @@ INHERITANCE_SRC_DIR  = File.join(INHERITANCE_ROOT, 'src')
 INHERITANCE_DIST_DIR = File.join(INHERITANCE_ROOT, 'dist')
 INHERITANCE_PKG_DIR  = File.join(INHERITANCE_ROOT, 'pkg')
 INHERITANCE_VERSION  = '2.4'
+INHERITANCE_INCEPTION = 2006
+
+def to_copy_string(initial_year)
+  (initial_year .. Time.now.year).inject do |memo, year| 
+    memo.to_s + ', ' + year.to_s
+  end
+end
 
 task :default => [:dist, :package, :clean_package_source]
 

@@ -1,5 +1,5 @@
 /*
   Class, version <%= INHERITANCE_VERSION %>
-  Copyright (c) 2006, Alex Arnell <alex@twologic.com>
+  Copyright (c) <%= to_copy_string(INHERITANCE_INCEPTION) %>, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
 */

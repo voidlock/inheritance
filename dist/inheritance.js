@@ -1,6 +1,6 @@
 /*
   Class, version 2.4
-  Copyright (c) 2006, Alex Arnell <alex@twologic.com>
+  Copyright (c) 2006, 2007, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
 */
 
