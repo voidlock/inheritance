@@ -3,6 +3,7 @@
   Copyright (c) 2006, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
 */
+
 var Class = {
   extend: function(parent, def) {
     if (arguments.length == 1) { def = parent; parent = null; }
@@ -65,39 +66,45 @@ var Class = {
     }
     return dest;
   },
-  singleton2: function() {
-    var __instance = false;
-    if (arguments.length == 2 && arguments[0].constructor && arguments[0].constructor._class_) {
-      arguments[0] = arguments[0].constructor._class_;
-    }
+
+  singleton: function() {
+    // store instance in a private variable
+    var instance = false;
     return {
-      constructor: {
-        // hide my class implementation in the constructor
-        _class_: Class.extend.apply(arguments.callee, arguments)
-      },
       getInstance: function () {
-        if (__instance) return __instance;
-        return __instance = new this.constructor._class_;
+        if (instance) return instance;
+        var obj = Class.extend.apply(arguments.callee, arguments);
+        return instance = new obj;
       }
     };
   },
 
-  singleton: function() {
+  singleton2: function() {
     var args = arguments;
-    var __instance = false;
-    return {
+    if (args.length == 2 && args[0].constructor && args[0].constructor._class_) {
+      // we're extending a singleton swap it out for it's class
+      args[0] = args[0].constructor._class_;
+    }
+
+    var instance = false;
+    var singleton = {
       getInstance: function () {
-        if (__instance) return __instance;
-        var obj = Class.extend.apply(args.callee, args);
-        return __instance = new obj;
+        if (instance) return instance;
+        return instance = new this.constructor._class_;
       }
     };
+
+    // hide my class in the constructor reference
+    singleton.constructor._class_ = Class.extend.apply(args.callee, args);
+    return singleton;
   }
 };
+
 // finally remap Class.create for backward compatability with prototype
 Class.create = function() {
   return Class.extend.apply(this, arguments);
 };
+
 /*
   Redistribution and use in source and binary forms, with or without modification, are
   permitted provided that the following conditions are met:
