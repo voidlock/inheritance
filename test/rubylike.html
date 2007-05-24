@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>rubylike</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Alex Arnell">
+	<!-- Date: 2007-05-08 -->
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+var Class = (function() {
+  var _SUB_CLASSING_ = {};
+  
+  function _create(base, definition) {
+    definition = definition || base;
+    base = definition === base ? function(){} : base;
+
+    // create our SubClass constructor function
+    var SubClass = function() {
+      if (arguments[0] !== _SUB_CLASSING_ && this.initialize && typeof(this.initialize) == 'function') {
+        return this.initialize.apply(this, arguments);
+      }
+      return this;
+    };
+
+    // now inherit from our base class
+    SubClass.prototype = new base(_SUB_CLASSING_);
+    SubClass.prototype.constructor = SubClass;
+
+    if (typeof(definition) == 'function') {
+      SubClass.prototype.include = _include;
+      definition = (function(scope){
+        return definition.call(scope) || {};
+      })(SubClass.prototype);
+      delete SubClass.prototype.include;
+    }
+    _inherit(SubClass.prototype, definition);
+    return SubClass;
+  }
+  
+  function _include(mod, clobber) {
+    clobber = clobber || false;
+    if (typeof(mod) != 'undefined' && mod !== null) {
+      for (var prop in mod) {
+        if (clobber || (!this[prop] && typeof(mod[prop]) == 'function')) {
+          this[prop] = mod[prop];
+        }
+      }
+    }
+    return this;
+  }
+  
+  function _inherit(dest, src, fname) {
+    if (arguments.length == 3) {
+      var ancestor = dest[fname], descendent = src[fname], method = descendent;
+      descendent = function() {
+        var ref = this.parent; this.parent = ancestor;
+        var result = method.apply(this, arguments);
+        ref ? this.parent = ref : delete this.parent;
+        return result;
+      };
+      // mask the underlying method
+      descendent.valueOf = function() { return method; };
+      descendent.toString = function() { return method.toString(); };
+      dest[fname] = descendent;
+    } else {
+      for (var prop in src) {
+        if (dest[prop] && typeof(src[prop]) == 'function') {
+          _inherit(dest, src, prop);
+        } else {
+          dest[prop] = src[prop];
+        }
+      }
+    }
+    return dest;
+  }
+
+  var ProtectedClass = function(definition) {
+    if (definition !== _SUB_CLASSING_) {
+      return _create(Class, definition);
+    }
+  };
+  ProtectedClass.prototype = {
+    extend: function(mod) {
+      var dest = this.prototype || this.constructor;
+      return _inherit(dest, mod);
+    }
+  };
+  
+  return ProtectedClass;
+})();
+
+var Loggable = {
+  log: function(msg) {
+    console.log(msg);
+  }
+};
+
+var Person;
+var joe;
+setTimeout(function() {
+  Person = new Class(function() {
+    this.include(Loggable);
+    this.extend({
+      classMethod: function() {
+        
+      }
+    });
+    var index = 0;
+
+    this.constructor.otherMethod = function () {};
+    return {
+      initialize: function() {
+        index++;
+      },
+      
+      to_s: function() {
+        return "I am a Person id " + index;
+      }
+    };
+  });
+  console.dir(Person);
+  joe = new Person();
+  console.dir(joe);
+
+  console.debug(joe.to_s());
+  console.debug(new Person().to_s());
+  
+  joe.extend({
+    doWork: function() {
+      return "Work! Work!";
+    }
+  });
+  console.dir(joe);
+  },1000);
+   
+</script>
+</body>
+</html>

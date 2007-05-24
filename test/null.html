@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>null</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Alex Arnell">
+	<!-- Date: 2007-05-07 -->
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+  
+  Object.extend = function() {
+    
+  };
+  
+  var Module = (function(){
+    return {
+      include: function(mod, clobber) {
+        clobber = clobber || false;
+        if (typeof(mod) != 'undefined' && mod !== null) {
+          for (var prop in mod) {
+            if (clobber || (!this[prop] && typeof(mod[prop]) == 'function')) {
+              this[prop] = mod[prop];
+            }
+          }
+        }
+        return this;
+      }
+    };
+  })();
+  
+  var Class = function(definition) {
+    var __SUB_CLASSING__ = {};
+  
+    var func = function() {
+      var result = this;
+      if (arguments[0] !== __SUB_CLASSING__ && this.initialize && typeof(this.initialize) == 'function') {
+        result = this.initialize.apply(this, arguments);
+      }
+      return result;
+    };
+
+    Module.include.call(func, Module);
+
+    switch (typeof(definition)) {
+      case 'function':
+      func.prototype = (function(self, func) {
+        return definition.call(func, func) || {};
+      })(this, func);      
+      break;
+      case 'object':
+      // TODO: extend class
+      func.prototype = definition;
+      break;
+    }
+  
+    // TODO: set constructor to actual base class
+    func.constructor = Class;
+    return func;
+  };
+  
+  Class.empty = function() {};
+  Class.prototype = {
+    include: function() {
+      console.log("including");
+    },
+    extend: function(def) {
+      var proto = new this();
+      var dest = this;
+      for (var method in def) {
+        dest[method] = def[method];
+      }
+      return dest;
+    }
+  };
+  
+  var Person = new Class({
+    initialize: function(name) {
+      this.name = name;
+    },
+    
+    toString: function() {
+      return "My name is " + this.name;
+    }
+    
+  });
+  
+  var SomeModule = {
+    // methods here
+  };
+  var SomeOtherModule = {
+    // methods here
+  };
+  var Person = new Class(function() {
+    //self.include(SomeModule, SomeOtherModule);
+    
+    return {
+      initialize: function(name) {
+        this.name = name;
+      },
+      to_s: function() {
+        return "Hello, my name is " + this.name;
+      }
+    };
+  });
+  
+  var Employee = new Class(function() {
+    
+    // using an anonymous module or class
+    // self.extend({
+    //   find: function(id) {
+    //     console.log("Searching for id " + id);
+    //   }
+    // });
+
+    // assigning directly
+    this.findByName = function(name) {
+      console.log("Searching for employee with name " + name);
+    };
+    
+    return {
+      // return my public interface
+      to_s: function() {
+        return "I am an employee";
+      }
+    };
+  });
+  
+  var suzy = new Person('Suzy');
+  var joe = new Employee('Joe');
+  console.dir(joe);
+  console.debug(joe.to_s());
+  Employee.findByName('Joe');
+  //Employee.find(102);
+
+</script>
+</body>
+</html>

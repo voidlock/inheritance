@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>index</title>
+	<script src="../common/log.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../dist/inheritance.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>
+  Fluff!  What fluff?  No properties or methods are added the the objects you define!
+  
+  View page source...
+  <hr/>
+<pre>
+<script type="text/javascript" charset="utf-8">
+// <![CDATA[
+Debug = {
+  log: function(msg) {
+    document.writeln(msg);
+  },
+  
+  inspect: function() {
+    var out = '{\r'; // use /r so I can find it over /n
+    for (var p in joe) {
+      out += p + ": " + ((joe[p].toString()).replace(/\r/g, '\\r')) + ',\r'
+    }
+    out = out.substring(0, out.length - 2);
+    out += '\r}'
+    return out;
+  }
+}
+
+Employee = Class.extend({
+
+  // constructor
+  initialize: function(name, dept) {
+    this.name = name;
+    this.dept = dept;
+  },
+
+
+  doWork: function() {
+    return this.name + " is now working...";
+  }
+});
+
+// Manager inherits functionality from Employee
+Manager = Class.extend(Employee, {
+
+  // ruby mixins; mixin all of Debug's methods
+  include: Debug,
+
+  // constructor
+  initialize: function(name, dept, title) {
+    this.parent(name, dept); // calls initialize on the parent, Employee
+    this.title = title;
+  },
+
+  // overrideen method
+  doWork: function() {
+    this.log(this.parent() + "at managing the employees.");
+  }
+});
+
+var joe = new Manager("Joe", "Sales", "Sales Manager");
+joe.doWork()
+
+Debug.log("Manager = " + joe.inspect());
+// ]]>
+</script>
+</pre>
+</body>
+</html>

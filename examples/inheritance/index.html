@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>inheritance demo</title>
+	<script src="../common/log.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../dist/inheritance.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+  <p>Ruby style inheritance</p>
+  
+  View page source...
+  <hr/>
+  
+  <div id="log"><!-- logging will appear in here --></div>
+  <script type="text/javascript" charset="utf-8">
+  // <![CDATA[
+    Person = Class.extend({
+      initialize: function(name) {
+        this.name = name;
+      },
+      
+      toString: function() {
+        return this.name;
+      }
+    });
+    
+    Employee = Class.extend(Person, {
+      initialize: function(name, dept) {
+        this.parent(name);
+        this.dept = dept;
+      },
+      
+      toString: function() {
+        return this.parent() + " works in " + this.dept;
+      }
+    });
+    
+    Manager = Class.extend(Employee, {
+      initialize: function(name, dept, office) {
+        this.parent(name, dept);
+        this.office = office;
+      },
+      
+      toString: function() {
+        return this.parent() + " and can be found in the " + this.office;
+      }
+    });
+    
+    var joe = new Employee("Joe", "Sales");
+    var sue = new Manager("Sue", "Management", "corner office");
+    
+    log(joe);
+    log(sue);
+  // ]]>
+  </script>
+</body>
+</html>
