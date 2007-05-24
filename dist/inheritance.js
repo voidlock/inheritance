@@ -1,5 +1,5 @@
 /*
-  Class, version 2.3
+  Class, version 2.4
   Copyright (c) 2006, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
 */
@@ -68,24 +68,13 @@ var Class = {
   },
 
   singleton: function() {
-    // store instance in a private variable
-    var instance = false;
-    return {
-      getInstance: function () {
-        if (instance) return instance;
-        var obj = Class.extend.apply(arguments.callee, arguments);
-        return instance = new obj;
-      }
-    };
-  },
-
-  singleton2: function() {
     var args = arguments;
     if (args.length == 2 && args[0].constructor && args[0].constructor._class_) {
       // we're extending a singleton swap it out for it's class
       args[0] = args[0].constructor._class_;
     }
 
+    // store instance in a private variable
     var instance = false;
     var singleton = {
       getInstance: function () {
