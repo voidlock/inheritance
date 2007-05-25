@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Prototype Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../vendor/prototype.js" type="text/javascript"></script>
+  <script src="../../dist/inheritance.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../lib/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>Inheritance Unit test file</h1>
+<p>
+  Test inheritance features of inheritance.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  // -- define our classes and mixins
+  
+  Comparable = {
+    greaterThan: function(other) {
+      return (this.compareTo(other) == 1);
+    },
+    
+    lessThan: function(other) {
+      return (this.compareTo(other) == -1);
+    },
+    
+    greaterThanEqualTo: function(other) {
+      return (this.compareTo(other) >= 0);
+    },
+    
+    lessThanEqualTo: function(other) {
+      return (this.compareTo(other) <= 0);
+    },
+    
+    equals: function(other) {
+      return (this.compareTo(other) == 0);
+    },
+    
+    compareTo: function(other) {
+      // expects this to be implemented and return -1, 0, 1 for
+      // less than, equal to, and greater than respectively
+    }
+  };
+  
+  Debug = {
+    log: function(level, msg) {
+      return level.toUpper() + " : " + msg;
+    },
+    severe: function(msg) {
+      this.log('severe', msg);
+    },
+    warning: function(msg) {
+      this.log('warning', msg);
+    },
+    info: function(msg) {
+      this.log('info', msg);
+    },
+    fine: function(msg) {
+      this.log('fine', msg);
+    },
+    finer: function(msg) {
+      this.log('finer', msg);
+    },
+    finest: function(msg) {
+      this.log('finest', msg);
+    }
+  };
+  
+  var comparableMethods = [];
+  for(method in Comparable) {
+    comparableMethods.push(method);
+  }
+  
+  var debugMethods = [];
+  for(method in Debug) {
+    debugMethods.push(method);
+  }
+  
+  var mixinMethods = [];
+  mixinMethods.concat(comparableMethods, debugMethods);
+  
+  Employee = Class.extend({
+    
+    include: Comparable,
+    
+    initialize: function(name, dept) {
+      this.name = name;
+      this.dept = dept;
+    },
+    
+    compareTo: function(other) {
+      if (this.name > other.name) {
+        return 1;
+      } else if (this.name < other.name) {
+        return -1;
+      } else {
+        return 0;
+      }
+    },
+    
+    toString: function() {
+      return '[' + this.name + ', ' + this.dept + ']';
+    }
+  });
+  
+  TwoMixins = Class.extend({
+    include: [Comparable, Debug],
+    
+    initialize: function(id) {
+      this.id = id;
+    },
+    
+    compareTo: function(other) {
+      if (this.id > other.id) {
+        return 1;
+      } else if (this.id < other.id) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }    
+  });
+
+  // -- some place holder variables
+  
+  var joe;
+  var bob;
+
+  // -- begin unit tests
+
+  Test.context("Mixins Test",{
+
+    setup: function() {
+      joe = new Employee("Joe", "Sales");
+      bob = new Employee("Bob", "Support");
+    },
+
+    teardown: function() {
+      joe = null;
+      bob = null;
+    },
+
+    'should include all mixin methods in prototype': function() {
+      
+      // Employee should only contain Comparable methods
+      comparableMethods.each(function(m) {
+        assert(typeof Employee.prototype[m] == 'function');
+      }.bind(this));
+      
+      // TwoMixins should contain both Comparable and Debug methods
+      mixinMethods.each(function(m) {
+        assert(typeof TwoMixins.prototype[m] == 'function');
+      }.bind(this));
+    },
+
+    'should include all mixin methods in instantiation': function() {
+      comparableMethods.each(function(m) {
+        assertRespondsTo(m, joe);
+      }.bind(this));
+      
+      // TwoMixins should contain both Comparable and Debug methods
+      mixinMethods.each(function(m) {
+        assertRespondsTo(m, joe);
+      }.bind(this));
+    },
+    
+    'should reference "this" variable': function() {
+      assert(joe.greaterThan(bob) == true);
+      assert(joe.lessThan(bob) == false);
+      assert(joe.greaterThanEqualTo(bob) == true);
+      assert(joe.lessThanEqualTo(bob) == false);
+      assert(joe.equals(bob) == false);
+    }
+
+  });
+  
+// ]]>
+</script>
+</body>
+</html>

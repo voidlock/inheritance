@@ -1,0 +1,29 @@
+A couple of points about the include statement before we go on. First, it has nothing to do with files. C programmers use a preprocessor directive called #include to insert the contents of one file into another during compilation. The Ruby include statement simply makes a reference to a named module. If that module is in a separate file, you must use require to drag that file in before using include. Second, a Ruby include does not simply copy the module's instance methods into the class. Instead, it makes a reference from the class to the included module. If multiple classes include that module, they'll all point to the same thing. If you change the definition of a method within a module, even while your program is running, all classes that include that module will exhibit the new behavior.[Of course, we're speaking only of methods here. Instance variables are always per-object, for example.]
+
+From Object:
+------------
+
+obj.extend(module, ...) => obj
+Adds to obj the instance methods from each module given as a parameter.
+
+   module Mod
+     def hello
+       "Hello from Mod.\n"
+     end
+   end
+
+   class Klass
+     def hello
+       "Hello from Klass.\n"
+     end
+   end
+
+   k = Klass.new
+   k.hello         #=> "Hello from Klass.\n"
+   k.extend(Mod)   #=> #<Klass:0x401b3bc8>
+   k.hello         #=> "Hello from Mod.\n"
+   
+   
+   
+
+ 

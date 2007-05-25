@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Prototype Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../vendor/prototype.js" type="text/javascript"></script>
+  <script src="../../dist/inheritance.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../lib/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>Inheritance Unit test file</h1>
+<p>
+  Test inheritance features of inheritance.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  // -- define our classes
+  
+  ClassOne = Class.extend({
+    initialize: function() {
+      this.name = "ClassOne";
+      this.param;
+    },
+    takesParams: function(param1) {
+      this.param = param1;
+    },
+    toString: function() {
+      return this.name + ',' + this.param;
+    }
+  });
+  
+  ClassTwo = Class.create(ClassOne, {
+    initialize: function() {
+      this.name = "ClassTwo";
+      this.param;
+    },
+    takesParams: function(param1, param2) {
+      this.parent(param1);
+      this.param += ',' + param2;
+    }    
+  });
+  
+  ClassThree = Class.create(ClassTwo, {
+    initialize: function() {
+      this.name = "ClassThree";
+      this.param;
+    },
+    takesParams: function(param1, param2, param3) {
+      this.parent(param1, param2);
+      this.param += ',' + param3;
+    }
+  });
+  
+  // -- some place holder variables
+  
+  var c1;
+  var c2;
+  var c3;
+  
+  var p1 = "p1";
+  var p2 = "p2";
+  var p3 = "p3";
+
+  // -- begin unit tests
+
+  Test.context("Class inheritance",{
+
+    setup: function() {
+      c1 = new ClassOne();
+      c2 = new ClassTwo();
+      c3 = new ClassThree();
+    },
+
+    teardown: function() {
+      c1 = null;
+      c2 = null;
+      c3 = null;
+    },
+
+    'should inherit methods ': function() {
+      assertRespondsTo('toString', c1);
+      assertRespondsTo('toString', c2);
+      assertRespondsTo('toString', c3);
+    },
+    
+    'should contain overwritten methods': function() {
+      assertRespondsTo('takesParams', c1);
+      assertRespondsTo('takesParams', c2);
+      assertRespondsTo('takesParams', c3);
+    },
+    
+    'should provide this.parent method within method scope': function() {
+
+      // assert there is no parent property
+      assertNull(c1.parent);
+      assertNull(c2.parent);
+      assertNull(c3.parent);
+      
+      c1.takesParams(p1);
+      c2.takesParams(p1, p2);
+      c3.takesParams(p1, p2, p3);
+      
+      // verify that parent must be called
+      assertEqual("ClassOne,p1", c1.toString());
+      assertEqual("ClassTwo,p1,p2", c2.toString());
+      assertEqual("ClassThree,p1,p2,p3", c3.toString());
+    }
+  });
+  
+// ]]>
+</script>
+</body>
+</html>

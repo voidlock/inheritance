@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>singleton</title>
+  <meta name="generator" content="TextMate http://macromates.com/">
+  <meta name="author" content="Alex Arnell">
+  <script src="../dist/inheritance.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+  var SuperApplication = Class.extend({
+    initialize: function() {
+      console.log("inside initialize");
+    },
+    
+    doSuperStuff: function() {
+      console.log("doing stuff");
+    }
+  });
+  
+  var superApp = new SuperApplication();
+  
+  var Application = Class.singleton({
+    initialize: function() {
+      console.log("inside initialize");
+    },
+    
+    doStuff: function() {
+      console.log("doing stuff");
+    }
+  });
+  
+  console.dir(Application);
+  
+  var x = new Application();
+  var app = Application.getInstance();
+  app.doStuff();
+  console.dir(app);
+  console.log(Application.constructor)
+  
+  var app2 = Application.getInstance();
+  app2.doStuff();
+  console.dir(app2);
+  
+  var AnotherSingleton = Class.singleton2(SuperApplication, {
+    initialize: function() {
+      console.log("inside initialize");
+    },
+    
+    doOtherStuff: function() {
+      console.log("doing stuff");
+    }
+  });
+  
+  console.dir(AnotherSingleton);
+  var as = AnotherSingleton.getInstance();
+  as.doOtherStuff();
+  console.dir(as);
+  console.log(AnotherSingleton.constructor)
+</script>
+</body>
+</html>

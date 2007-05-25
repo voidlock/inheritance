@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>The Good Stuff</title>
+	
+</head>
+
+<body>
+  <h3>What is this?</h3>
+  
+  <p>This is the home of a little extension to the Prototype library that I've written.  However, it does not require the Prototype library to use, and in fact works quite well just by itself. The following is an excerpt from my blog post about this very library.  More documentation will follow.</p>
+    
+  <h3>The Good Stuff</h3>
+
+  <p>I've created a Class object that mimics the Class object found in the Prototype library.  If you already use Prototype, your old code should continue to work without any side effects.  The core of my extension is the <code>Class.create(..)</code> method.</p>
+
+  <p>In order to create a new Object you can use the following syntax. If you use the Prototype library already, then this will be familiar.</p>
+
+  <pre><code>
+  Employee = Class.create();
+  Employee.prototype = {
+    initialize: function() {
+      this.name = "";
+      this.dept = "general";
+    },
+    doWork: function() {
+      return "Employee is working...";
+    },
+    takeBreak: function() {
+      return "Employee is slacking off...";	
+    }
+  };
+  </code></pre>
+
+  <p>So what is this doing? In this case <code>Class.create()</code> creates a constructor function for us. The created constructor calls the initialize method on Object creation.  So in essence we can treat initialize as our constructor. So far this is functionally the same as the <code>Class.create()</code> method found in the Prototype Library, but thats not all I've done.  I took this idea one step further and combined both the constructor creation and the prototype definition in one convenient call.</p>
+
+  <pre><code>
+  Employee = Class.create({
+    initialize: function() {
+      this.name = "";
+      this.dept = "general";
+    },
+    doWork: function() {
+      return "Employee is working...";
+    },
+    takeBreak: function() {
+      return "Employee is slacking off...";	
+    }
+  });
+  </code></pre>
+
+  <p>The above code will create the Employee object we created earlier.  You no longer have to separate your Object definition into 2 pieces.  Its all done at the same time.</p>
+
+  <p>However, I took it another step further. What happens when you want to create an object hierarchy? <code>Class.create()</code> can do that too!</p>
+
+  <pre><code>
+  Manager = Class.create(Employee, {
+    manage: function() {
+      return "Manager is now micro-managing...";
+    }
+  });
+  </code></pre>
+
+  <p>So now using a very simple syntax we've created our Manager Object, that extends from Employee and defined the manage method that only Managers have.</p>
+
+  <p>Well what about that problem of calling methods defined in the parent class?  Well if you create your Objects using the above <code>Class.create()</code> syntax, then you will find a special helper method already defined in each of your Objects.</p>
+
+  <pre><code>
+  Manager = Class.create(Employee, {
+    //...
+    doWork: function() {
+      this.parent('doWork');
+    }
+  });
+  </code></pre>
+
+  <p>The <code>parent()</code> method is defined internally when you create an Object using <li>Class.create()</li>.  The parent method takes too parameters, the first is the method to call and the second is an array of arguments to pass to that method.</p>
+
+  <pre><code>
+    this.parent('doWork');
+    this.parent('doWork', [param1, param2, ...]);
+  </code></pre>
+
+  <p>The parent method is inspired heavily from the way messaging works Objective-C<a href="#footnote7" title="See links at bottom"><sup>7</sup></a>.  It will look in the parent class for the given method.  If it cannot find it there it will continue the search upwards in every parent class until it reaches the top of the chain.  If at this point it still cannot find an implementation of that method it calls a special <code>method_missing(function, args)</code> method, which you can override to do something special if you so wish.  The default <code>method_missing</code> implementation just throws an error.</p>
+
+  <h3>Mixins</h3>
+
+  <p>The last thing worth mentioning is the <code>Class.mixin()</code> method, which is identical to Prototype's <code>Object.extend()</code> method or the <code>MochiKit.Base.update()</code> function.  I beleive mixin is a better name since, you are essentially mixing in the key:value pairs from another object.  You can use this method to mixin common functionality.  This works very similary to mixin support you find in other languages such as Ruby<a href="#footnote8" title="See links at bottom"><sup>8</sup></a>.</p>
+
+  <pre><code>
+  Debug = {
+    log: function(msg) {
+      alert(msg);
+    }
+  };
+
+  Employee = Class.create({
+    initialize: function() {
+      this.log("In the Employee constructor!");
+    }
+  });
+  Class.mixin(Employee.prototype, Debug);
+
+  Client = Class.create({
+    initialize: function() {
+      this.log("In the Client constructor!");
+    }
+  });
+  Class.mixin(Client.prototype, Debug);
+  </code></pre>
+
+  <p>Now both Employee and Client objects have an identical log method.</p>
+
+  <pre><code>
+  var e = new Employee();
+  // alert with message "In the Employee constructor!" will be seen
+
+  var c = new Client();
+  // another alert with message "In the Client constructor!" will be seen
+  </code></pre>
+
+</body>
+</html>
