@@ -1,19 +1,21 @@
 /*
   Class, version 2.4
-  Copyright (c) 2006, 2007, Alex Arnell <alex@twologic.com>
+  Copyright (c) 2006, 2007, 2008, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
 */
+(function(){
 
-var Class = {
+var __extending = {};
+
+var Class = window.Class = {
   extend: function(parent, def) {
     if (arguments.length == 1) { def = parent; parent = null; }
     var func = function() {
-      if (!Class.extending) this.initialize.apply(this, arguments);
+      if (arguments[0] ==  __extending) { return; }
+      this.initialize.apply(this, arguments);
     };
     if (typeof(parent) == 'function') {
-      Class.extending = true;
-      func.prototype = new parent();
-      delete Class.extending;
+      func.prototype = new parent( __extending);
     }
     var mixins = [];
     if (def && def.include) {
@@ -94,6 +96,7 @@ Class.create = function() {
   return Class.extend.apply(this, arguments);
 };
 
+})();
 /*
   Redistribution and use in source and binary forms, with or without modification, are
   permitted provided that the following conditions are met:

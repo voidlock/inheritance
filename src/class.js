@@ -1,13 +1,14 @@
-var Class = {
+var __extending = {};
+
+var Class = window.Class = {
   extend: function(parent, def) {
     if (arguments.length == 1) { def = parent; parent = null; }
     var func = function() {
-      if (!Class.extending) this.initialize.apply(this, arguments);
+      if (arguments[0] ==  __extending) { return; }
+      this.initialize.apply(this, arguments);
     };
     if (typeof(parent) == 'function') {
-      Class.extending = true;
-      func.prototype = new parent();
-      delete Class.extending;
+      func.prototype = new parent( __extending);
     }
     var mixins = [];
     if (def && def.include) {
