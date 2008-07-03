@@ -18,7 +18,7 @@
 <body>
 <h1>Inheritance Unit test file</h1>
 <p>
-  Test inheritance features of inheritance.js
+  Test class inheritance features of inheritance.js
 </p>
 
 <!-- Log output -->
@@ -76,8 +76,7 @@
   var p3 = "p3";
 
   // -- begin unit tests
-
-  Test.context("Class inheritance",{
+  new Test.Unit.Runner({
 
     setup: function() {
       c1 = new ClassOne();
@@ -91,20 +90,19 @@
       c3 = null;
     },
 
-    'should inherit methods ': function() {
+    test_should_inherit_methods: function() { with(this) {
       assertRespondsTo('toString', c1);
       assertRespondsTo('toString', c2);
       assertRespondsTo('toString', c3);
-    },
-    
-    'should contain overwritten methods': function() {
+    }},
+
+    test_should_contain_overwritten_methods: function() { with(this) {
       assertRespondsTo('takesParams', c1);
       assertRespondsTo('takesParams', c2);
       assertRespondsTo('takesParams', c3);
-    },
-    
-    'should provide this.parent method within method scope': function() {
+    }},
 
+    test_should_provide_this_parent_method_within_method_scope: function() { with(this) {
       // assert there is no parent property
       assertNull(c1.parent);
       assertNull(c2.parent);
@@ -118,9 +116,10 @@
       assertEqual("ClassOne,p1", c1.toString());
       assertEqual("ClassTwo,p1,p2", c2.toString());
       assertEqual("ClassThree,p1,p2,p3", c3.toString());
-    }
-  });
-  
+    }}
+
+  }, 'testlog');
+
 // ]]>
 </script>
 </body>

@@ -142,8 +142,7 @@
   var bob;
 
   // -- begin unit tests
-
-  Test.context("Mixins Test",{
+  new Test.Unit.Runner({
 
     setup: function() {
       joe = new Employee("Joe", "Sales");
@@ -155,8 +154,7 @@
       bob = null;
     },
 
-    'should include all mixin methods in prototype': function() {
-      
+    test_should_include_all_mixin_methods_in_prototype: function() { with(this) {
       // Employee should only contain Comparable methods
       comparableMethods.each(function(m) {
         assert(typeof Employee.prototype[m] == 'function');
@@ -166,9 +164,9 @@
       mixinMethods.each(function(m) {
         assert(typeof TwoMixins.prototype[m] == 'function');
       }.bind(this));
-    },
+    }},
 
-    'should include all mixin methods in instantiation': function() {
+    test_should_include_all_mixin_methods_in_instantiation: function() { with(this) {
       comparableMethods.each(function(m) {
         assertRespondsTo(m, joe);
       }.bind(this));
@@ -177,18 +175,18 @@
       mixinMethods.each(function(m) {
         assertRespondsTo(m, joe);
       }.bind(this));
-    },
-    
-    'should reference "this" variable': function() {
+    }},
+
+    test_should_reference__this__variable: function() { with(this) {
       assert(joe.greaterThan(bob) == true);
       assert(joe.lessThan(bob) == false);
       assert(joe.greaterThanEqualTo(bob) == true);
       assert(joe.lessThanEqualTo(bob) == false);
       assert(joe.equals(bob) == false);
-    }
+    }}
 
-  });
-  
+  }, 'testlog');
+
 // ]]>
 </script>
 </body>
