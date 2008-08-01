@@ -1,5 +1,4 @@
 <%= include 'HEADER' %>
-(function(){
 
 <%= include 'class.js' %>
 
@@ -7,6 +6,5 @@
 Class.create = function() {
   return Class.extend.apply(this, arguments);
 };
-  
-})();
+
 <%= include 'FOOTER' %>
