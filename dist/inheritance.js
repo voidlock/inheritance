@@ -1,5 +1,5 @@
 /*
-  Class, version 2.6
+  Class, version 2.7
   Copyright (c) 2006, 2007, 2008, Alex Arnell <alex@twologic.com>
   Licensed under the new BSD License. See end of file for full license terms.
 */

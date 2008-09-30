@@ -5,7 +5,7 @@ INHERITANCE_ROOT     = File.expand_path(File.dirname(__FILE__))
 INHERITANCE_SRC_DIR  = File.join(INHERITANCE_ROOT, 'src')
 INHERITANCE_DIST_DIR = File.join(INHERITANCE_ROOT, 'dist')
 INHERITANCE_PKG_DIR  = File.join(INHERITANCE_ROOT, 'pkg')
-INHERITANCE_VERSION  = '2.6'
+INHERITANCE_VERSION  = '2.7'
 INHERITANCE_INCEPTION = 2006
 
 def to_copy_string(initial_year)
