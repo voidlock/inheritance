@@ -70,23 +70,24 @@ var Class = (function() {
     },
     singleton: function() {
       var args = arguments;
-      if (args.length == 2 && args[0].constructor && args[0].constructor._class_) {
+      if (args.length == 2 && args[0].getInstance) {
+        var klass = args[0].getInstance(__extending);
         // we're extending a singleton swap it out for it's class
-        args[0] = args[0].constructor._class_;
+        if (klass) { args[0] = klass; }
       }
 
-      // store instance in a private variable
-      var instance = false;
-      var singleton = {
-        getInstance: function () {
-          if (instance) return instance;
-          return instance = new this.constructor._class_;
-        }
-      };
-
-      // hide my class in the constructor reference
-      singleton.constructor._class_ = Class.extend.apply(args.callee, args);
-      return singleton;
+      return (function(args){
+        // store instance and class in private variables
+        var instance = false;
+        var klass = Class.extend.apply(args.callee, args);
+        return {
+          getInstance: function () {
+            if (arguments[0] == __extending) return klass;
+            if (instance) return instance;
+            return (instance = new klass());
+          }
+        };
+      })(args);
     }
   };
 })();

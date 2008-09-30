@@ -10,17 +10,17 @@
 </head>
 <body>
 <script type="text/javascript" charset="utf-8">
-  var SuperApplication = Class.extend({
-    initialize: function() {
-      console.log("inside initialize");
-    },
-    
-    doSuperStuff: function() {
-      console.log("doing stuff");
-    }
-  });
+  // var SuperApplication = Class.extend({
+  //   initialize: function() {
+  //     console.log("inside SuperApplication#initialize");
+  //   },
+  //   
+  //   doSuperStuff: function() {
+  //     console.log("doing stuff");
+  //   }
+  // });
   
-  var superApp = new SuperApplication();
+  // var superApp = new SuperApplication();
   
   var Application = Class.singleton({
     initialize: function() {
@@ -31,34 +31,58 @@
       console.log("doing stuff");
     }
   });
-  
-  console.dir(Application);
-  
-  var x = new Application();
-  var app = Application.getInstance();
-  app.doStuff();
-  console.dir(app);
-  console.log(Application.constructor)
-  
-  var app2 = Application.getInstance();
-  app2.doStuff();
-  console.dir(app2);
-  
-  var AnotherSingleton = Class.singleton2(SuperApplication, {
+
+  var Application2 = Class.singleton({
     initialize: function() {
       console.log("inside initialize");
     },
     
-    doOtherStuff: function() {
+    doStuff2: function() {
+      console.log("doing stuff");
+    }
+  });
+
+  var Application3 = Class.singleton(Application,{
+    initialize: function() {
+      console.log("inside initialize");
+    },
+    
+    doStuff3: function() {
       console.log("doing stuff");
     }
   });
   
-  console.dir(AnotherSingleton);
-  var as = AnotherSingleton.getInstance();
-  as.doOtherStuff();
-  console.dir(as);
-  console.log(AnotherSingleton.constructor)
+  console.dir(Application.getInstance());
+  console.dir(Application2.getInstance());
+  console.dir(Application3.getInstance());
+
+  console.log('take2:', Application3.getInstance());
+  
+  // // var x = new Application();
+  // var app = Application.getInstance();
+  // app.doStuff();
+  // console.dir(app);
+  // console.log(Application.constructor);
+  // 
+  // var app2 = Application.getInstance();
+  // app2.doStuff();
+  // console.dir(app2);
+  
+  // var AnotherSingleton = Class.singleton(SuperApplication, {
+  //   initialize: function() {
+  //     console.log("inside AnotherSingleton#initialize");
+  //   },
+  //   
+  //   doOtherStuff: function() {
+  //     console.log("doing stuff");
+  //   }
+  // });
+  // 
+  // console.dir(AnotherSingleton);
+  // var as = AnotherSingleton.getInstance();
+  // as.doOtherStuff();
+  // console.dir(as);
+  // console.log(AnotherSingleton.constructor);
 </script>
 </body>
 </html>

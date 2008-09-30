@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Prototype Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="../../vendor/prototype.js" type="text/javascript"></script>
+  <script src="../../dist/inheritance.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../lib/unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="../test.css" type="text/css" />
+  <style type="text/css" media="screen">
+  /* <![CDATA[ */
+    #testcss1 { font-size:11px; color: #f00; }
+    #testcss2 { font-size:12px; color: #0f0; display: none; }
+  /* ]]> */
+  </style>
+</head>
+<body>
+<h1>Inheritance Unit test file</h1>
+<p>
+  Test inheritance features of inheritance.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  var Singleton1 = Class.singleton({
+    initialize: function() {
+      this.variable = 'a'
+    },
+
+    method1: function() {
+
+    }
+  });
+
+  var Singleton2 = Class.singleton({
+    initialize: function() {
+    },
+
+    method2: function() {
+
+    }
+  });
+
+  var Singleton3 = Class.singleton(Singleton1, {
+    initialize: function() {
+    },
+
+    method3: function() {
+
+    }
+  });
+
+  var a;
+  var b;
+  var c;
+
+  // -- begin unit tests
+  new Test.Unit.Runner({
+
+    setup: function() {
+      a = Singleton1.getInstance();
+      b = Singleton2.getInstance();
+      c = Singleton3.getInstance();
+    },
+
+    teardown: function() {
+      a = null;
+      b = null;
+      c = null;
+    },
+
+    test_should_call_initialize_method: function() { with(this){
+      assert(a.variable == 'a')
+    }},
+
+    test_should_contain_defined_methods: function() { with(this) {
+      assert(typeof a.initialize == 'function');
+      assert(typeof a.method1 == 'function');
+    }},
+
+    test_should_have_only_one_instance: function() { with(this) {
+      var other = Singleton1.getInstance();
+      assert(a === other);
+    }},
+
+    test_should_not_cross_pollinate: function() { with(this) {
+      assert(typeof a.method1 == 'function');
+      assert(typeof b.method2 == 'function');
+      assert(typeof b.method1 == 'undefined');
+    }},
+
+    test_should_extend_singletons: function() { with(this) {
+      assert(typeof c.method1 == 'function');
+      assert(typeof c.method3 == 'function');
+    }}
+
+  }, 'testlog');
+
+// ]]>
+</script>
+</body>
+</html>
